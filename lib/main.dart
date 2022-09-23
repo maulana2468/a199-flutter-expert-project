@@ -1,6 +1,7 @@
 import 'package:ditonton/common/constants.dart';
 import 'package:ditonton/common/utils.dart';
 import 'package:ditonton/features/tv_series/presentation/pages/home_tvseries_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +32,12 @@ import 'features/tv_series/presentation/provider/tvseries_detail_notifier.dart';
 import 'features/tv_series/presentation/provider/tvseries_list_notifiler.dart';
 import 'features/tv_series/presentation/provider/tvseries_search_notifier.dart';
 import 'features/tv_series/presentation/provider/watchlist_tvseries_notifier.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   di.init();
   runApp(MyApp());
 }

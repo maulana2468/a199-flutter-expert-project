@@ -1,3 +1,4 @@
+import 'package:ditonton/common/ssl_certificate.dart';
 import 'package:ditonton/features/movies/data/datasources/db/database_helper.dart';
 import 'package:ditonton/features/movies/data/datasources/movie_local_data_source.dart';
 import 'package:ditonton/features/movies/data/datasources/movie_remote_data_source.dart';
@@ -46,7 +47,7 @@ import 'features/tv_series/presentation/provider/watchlist_tvseries_notifier.dar
 
 final locator = GetIt.instance;
 
-void init() {
+void init() async {
   // provider
   locator.registerFactory(
     () => MovieListNotifier(
@@ -173,5 +174,6 @@ void init() {
       () => DatabaseTvSeriesHelper());
 
   // external
-  locator.registerLazySingleton(() => http.Client());
+  final client = await getIoClient();
+  locator.registerLazySingleton(() => client);
 }
