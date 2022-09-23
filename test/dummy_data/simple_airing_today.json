@@ -1,0 +1,28 @@
+{
+    "dates": {
+      "maximum": "2021-05-23",
+      "minimum": "2021-04-05"
+    },
+    "page": 1,
+    "results": [
+        {
+          "poster_path": "posterPath",
+            "popularity": 1.0,
+            "id": 1,
+            "backdrop_path": "TEST",
+            "vote_average": 1.0,
+            "overview": "overview",
+            "first_air_date": "2020 - 07 - 07",
+            "origin_country": ["ID"],
+            "genre_ids": [1, 2, 3],
+            "original_language": "ID",
+            "vote_count": 1,
+            "name": "TEST",
+            "original_name": "TEST"
+        }
+      ],
+    "total_pages": 47,
+    "total_results": 940
+  }
+
+
