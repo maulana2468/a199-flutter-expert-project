@@ -21,34 +21,34 @@ class TvSeriesModel extends Equatable {
   });
 
   String? posterPath;
-  double popularity;
-  int id;
+  double? popularity;
+  int? id;
   String? backdropPath;
-  double voteAverage;
-  String overview;
-  String firstAirDate;
-  List<String> originCountry;
-  List<int> genreIds;
-  String originalLanguage;
-  int voteCount;
-  String name;
-  String originalName;
+  double? voteAverage;
+  String? overview;
+  String? firstAirDate;
+  List<String>? originCountry;
+  List<int>? genreIds;
+  String? originalLanguage;
+  int? voteCount;
+  String? name;
+  String? originalName;
 
   TvSeries toEntity() {
     return TvSeries(
-      posterPath: this.posterPath,
-      popularity: this.popularity,
-      id: this.id,
-      backdropPath: this.backdropPath,
-      voteAverage: this.voteAverage,
-      overview: this.overview,
-      firstAirDate: this.firstAirDate,
-      originCountry: this.originCountry,
-      genreIds: this.genreIds,
-      originalLanguage: this.originalLanguage,
-      voteCount: this.voteCount,
-      name: this.name,
-      originalName: this.originalName,
+      posterPath: this.posterPath ?? "",
+      popularity: this.popularity ?? 0,
+      id: this.id ?? 0,
+      backdropPath: this.backdropPath ?? "",
+      voteAverage: this.voteAverage ?? 0,
+      overview: this.overview ?? "",
+      firstAirDate: this.firstAirDate ?? "",
+      originCountry: this.originCountry ?? [],
+      genreIds: this.genreIds ?? [],
+      originalLanguage: this.originalLanguage ?? "",
+      voteCount: this.voteCount ?? 0,
+      name: this.name ?? "",
+      originalName: this.originalName ?? "",
     );
   }
 
@@ -78,8 +78,8 @@ class TvSeriesModel extends Equatable {
         "overview": overview,
         "first_air_date": firstAirDate,
         // "${firstAirDate!.year.toString().padLeft(4, '0')}-${firstAirDate!.month.toString().padLeft(2, '0')}-${firstAirDate!.day.toString().padLeft(2, '0')}",
-        "origin_country": List<dynamic>.from(originCountry.map((x) => x)),
-        "genre_ids": List<dynamic>.from(genreIds.map((x) => x)),
+        "origin_country": List<dynamic>.from(originCountry!.map((x) => x)),
+        "genre_ids": List<dynamic>.from(genreIds!.map((x) => x)),
         "original_language": originalLanguage,
         "vote_count": voteCount,
         "name": name,

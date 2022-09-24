@@ -2,12 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ditonton/common/constants.dart';
 import 'package:ditonton/common/state_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/entities/tvseries.dart';
 import '../../domain/entities/tvseries_detail.dart';
-import '../provider/tvseries_detail_notifier.dart';
+import '../bloc/tvseries_detail/tvseries_detail_bloc.dart';
 
 class TvSeriesDetailPage extends StatefulWidget {
   static const ROUTE_NAME = '/detail-tvseries';
@@ -24,33 +25,33 @@ class _TvSeriesDetailPageState extends State<TvSeriesDetailPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      Provider.of<TvSeriesDetailNotifier>(context, listen: false)
-          .fetchTvSeriesDetail(widget.id);
-      Provider.of<TvSeriesDetailNotifier>(context, listen: false)
-          .loadWatchlistStatus(widget.id);
+      BlocProvider.of<TvSeriesDetailBloc>(context, listen: false)
+          .add(OnFetchTvSeriesDetail(id: widget.id));
+      BlocProvider.of<TvSeriesDetailBloc>(context, listen: false)
+          .add(OnLoadWatchlistStatus(id: widget.id));
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Consumer<TvSeriesDetailNotifier>(
-        builder: (context, provider, child) {
-          if (provider.tvSeriesState == RequestState.Loading) {
+      body: BlocBuilder<TvSeriesDetailBloc, TvSeriesDetailState>(
+        builder: (context, state) {
+          if (state.tvSeriesState == RequestState.Loading) {
             return Center(
               child: CircularProgressIndicator(),
             );
-          } else if (provider.tvSeriesState == RequestState.Loaded) {
-            final tvSeries = provider.tvSeries;
+          } else if (state.tvSeriesState == RequestState.Loaded) {
+            final tvSeries = state.tvSeries;
             return SafeArea(
               child: DetailContent(
                 tvSeries,
-                provider.tvSeriesRecommendations,
-                provider.isAddedToWatchlist,
+                state.tvSeriesRecommendations,
+                state.isAddedToWatchlist,
               ),
             );
           } else {
-            return Text(provider.message);
+            return Text(state.message);
           }
         },
       ),
@@ -108,30 +109,36 @@ class DetailContent extends StatelessWidget {
                             ElevatedButton(
                               onPressed: () async {
                                 if (!isAddedWatchlist) {
-                                  await Provider.of<TvSeriesDetailNotifier>(
-                                          context,
+                                  BlocProvider.of<TvSeriesDetailBloc>(context,
                                           listen: false)
-                                      .addWatchlist(tvSeries);
+                                      .add(OnAddWatchList(
+                                          tvSeriesDetail: tvSeries));
                                 } else {
-                                  await Provider.of<TvSeriesDetailNotifier>(
-                                          context,
+                                  BlocProvider.of<TvSeriesDetailBloc>(context,
                                           listen: false)
-                                      .removeFromWatchlist(tvSeries);
+                                      .add(OnRemoveWatchlist(
+                                          tvSeriesDetail: tvSeries));
                                 }
 
-                                final message =
-                                    Provider.of<TvSeriesDetailNotifier>(context,
-                                            listen: false)
-                                        .watchlistMessage;
+                                await Future.delayed(
+                                    Duration(milliseconds: 100));
+
+                                final message = context.select(
+                                    (TvSeriesDetailBloc value) =>
+                                        value.state.watchlistMessage);
 
                                 if (message ==
-                                        TvSeriesDetailNotifier
+                                        TvSeriesDetailBloc
                                             .watchlistAddSuccessMessage ||
                                     message ==
-                                        TvSeriesDetailNotifier
-                                            .watchlistRemoveSuccessMessage) {
+                                        TvSeriesDetailBloc
+                                            .watchlistRemoveSuccessMessage ||
+                                    message == "") {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(message)));
+                                      SnackBar(
+                                          content: Text((message == "")
+                                              ? "Added to Watchlist"
+                                              : message)));
                                 } else {
                                   showDialog(
                                       context: context,
@@ -187,17 +194,18 @@ class DetailContent extends StatelessWidget {
                               'Recommendations',
                               style: kHeading6,
                             ),
-                            Consumer<TvSeriesDetailNotifier>(
-                              builder: (context, data, child) {
-                                if (data.recommendationState ==
+                            BlocBuilder<TvSeriesDetailBloc,
+                                TvSeriesDetailState>(
+                              builder: (context, state) {
+                                if (state.recommendationState ==
                                     RequestState.Loading) {
                                   return Center(
                                     child: CircularProgressIndicator(),
                                   );
-                                } else if (data.recommendationState ==
+                                } else if (state.recommendationState ==
                                     RequestState.Error) {
-                                  return Text(data.message);
-                                } else if (data.recommendationState ==
+                                  return Text(state.message);
+                                } else if (state.recommendationState ==
                                     RequestState.Loaded) {
                                   if (recommendations.isEmpty) {
                                     return Text("No recommendation displayed");

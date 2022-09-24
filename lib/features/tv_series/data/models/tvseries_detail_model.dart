@@ -52,73 +52,73 @@ class TvSeriesDetailResponse extends Equatable {
     required this.voteCount,
   });
 
-  String backdropPath;
+  String? backdropPath;
   List<CreatedByModel> createdBy;
   List<int> episodeRunTime;
-  DateTime firstAirDate;
+  DateTime? firstAirDate;
   List<GenreTvSeriesModel> genres;
-  String homepage;
-  int id;
-  bool inProduction;
-  List<String> languages;
-  DateTime lastAirDate;
+  String? homepage;
+  int? id;
+  bool? inProduction;
+  List<String>? languages;
+  DateTime? lastAirDate;
   LastEpisodeToAirModel lastEpisodeToAir;
-  String name;
+  String? name;
   dynamic nextEpisodeToAir;
   List<NetworkModel> networks;
-  int numberOfEpisodes;
-  int numberOfSeasons;
-  List<String> originCountry;
-  String originalLanguage;
-  String originalName;
-  String overview;
-  double popularity;
-  String posterPath;
+  int? numberOfEpisodes;
+  int? numberOfSeasons;
+  List<String>? originCountry;
+  String? originalLanguage;
+  String? originalName;
+  String? overview;
+  double? popularity;
+  String? posterPath;
   List<NetworkModel> productionCompanies;
   List<ProductionCountryModel> productionCountries;
   List<SeasonModel> seasons;
   List<SpokenLanguageModel> spokenLanguages;
-  String status;
-  String tagline;
-  String type;
-  double voteAverage;
-  int voteCount;
+  String? status;
+  String? tagline;
+  String? type;
+  double? voteAverage;
+  int? voteCount;
 
   TvSeriesDetail toEntity() {
     return TvSeriesDetail(
-      backdropPath: this.backdropPath,
+      backdropPath: this.backdropPath ?? "",
       createdBy: this.createdBy.map((e) => e.toEntity()).toList(),
       episodeRunTime: this.episodeRunTime,
-      firstAirDate: this.firstAirDate,
+      firstAirDate: this.firstAirDate ?? DateTime(0, 0, 0),
       genres: this.genres.map((e) => e.toEntity()).toList(),
-      homepage: this.homepage,
-      id: this.id,
-      inProduction: this.inProduction,
-      languages: this.languages,
-      lastAirDate: this.lastAirDate,
-      lastEpisodeToAir: this.lastEpisodeToAir.toEntity(),
-      name: this.name,
+      homepage: this.homepage ?? "",
+      id: this.id ?? 0,
+      inProduction: this.inProduction ?? false,
+      languages: this.languages ?? [],
+      lastAirDate: this.lastAirDate ?? DateTime(0, 0, 0),
+      lastEpisodeToAir: (this.lastEpisodeToAir).toEntity(),
+      name: this.name ?? "",
       nextEpisodeToAir: this.nextEpisodeToAir,
       networks: this.networks.map((e) => e.toEntity()).toList(),
-      numberOfEpisodes: this.numberOfEpisodes,
-      numberOfSeasons: this.numberOfSeasons,
-      originCountry: this.originCountry,
-      originalLanguage: this.originalLanguage,
-      originalName: this.originalName,
-      overview: this.overview,
-      popularity: this.popularity,
-      posterPath: this.posterPath,
+      numberOfEpisodes: this.numberOfEpisodes ?? 0,
+      numberOfSeasons: this.numberOfSeasons ?? 0,
+      originCountry: this.originCountry ?? [],
+      originalLanguage: this.originalLanguage ?? "",
+      originalName: this.originalName ?? "",
+      overview: this.overview ?? "",
+      popularity: this.popularity ?? 0.0,
+      posterPath: this.posterPath ?? "",
       productionCompanies:
           this.productionCompanies.map((e) => e.toEntity()).toList(),
       productionCountries:
           this.productionCountries.map((e) => e.toEntity()).toList(),
       seasons: this.seasons.map((e) => e.toEntity()).toList(),
       spokenLanguages: this.spokenLanguages.map((e) => e.toEntity()).toList(),
-      status: this.status,
-      tagline: this.tagline,
-      type: this.type,
-      voteAverage: this.voteAverage,
-      voteCount: this.voteCount,
+      status: this.status ?? "",
+      tagline: this.tagline ?? "",
+      type: this.type ?? "",
+      voteAverage: this.voteAverage ?? 0,
+      voteCount: this.voteCount ?? 0,
     );
   }
 
@@ -171,21 +171,21 @@ class TvSeriesDetailResponse extends Equatable {
         "created_by": List<dynamic>.from(createdBy.map((x) => x.toJson())),
         "episode_run_time": List<dynamic>.from(episodeRunTime.map((x) => x)),
         "first_air_date":
-            "${firstAirDate.year.toString().padLeft(4, '0')}-${firstAirDate.month.toString().padLeft(2, '0')}-${firstAirDate.day.toString().padLeft(2, '0')}",
+            "${firstAirDate!.year.toString().padLeft(4, '0')}-${firstAirDate!.month.toString().padLeft(2, '0')}-${firstAirDate!.day.toString().padLeft(2, '0')}",
         "genres": List<dynamic>.from(genres.map((x) => x.toJson())),
         "homepage": homepage,
         "id": id,
         "in_production": inProduction,
-        "languages": List<dynamic>.from(languages.map((x) => x)),
+        "languages": List<dynamic>.from(languages!.map((x) => x)),
         "last_air_date":
-            "${lastAirDate.year.toString().padLeft(4, '0')}-${lastAirDate.month.toString().padLeft(2, '0')}-${lastAirDate.day.toString().padLeft(2, '0')}",
+            "${lastAirDate!.year.toString().padLeft(4, '0')}-${lastAirDate!.month.toString().padLeft(2, '0')}-${lastAirDate!.day.toString().padLeft(2, '0')}",
         "last_episode_to_air": lastEpisodeToAir.toJson(),
         "name": name,
         "next_episode_to_air": nextEpisodeToAir,
         "networks": List<dynamic>.from(networks.map((x) => x.toJson())),
         "number_of_episodes": numberOfEpisodes,
         "number_of_seasons": numberOfSeasons,
-        "origin_country": List<dynamic>.from(originCountry.map((x) => x)),
+        "origin_country": List<dynamic>.from(originCountry!.map((x) => x)),
         "original_language": originalLanguage,
         "original_name": originalName,
         "overview": overview,

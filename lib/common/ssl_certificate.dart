@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:http/io_client.dart';
 
 Future<SecurityContext> get globalContext async {
-  final sslCert = await rootBundle.load('certificates/certificates.pem');
+  final sslCert = await rootBundle.load('assets/certificate.crt');
   SecurityContext securityContext = SecurityContext(withTrustedRoots: false);
   securityContext.setTrustedCertificatesBytes(sslCert.buffer.asInt8List());
   return securityContext;

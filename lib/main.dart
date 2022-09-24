@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ditonton/injection.dart' as di;
 
 import 'features/movies/presentation/pages/about_page.dart';
@@ -15,73 +15,74 @@ import 'features/movies/presentation/pages/popular_movies_page.dart';
 import 'features/movies/presentation/pages/search_page.dart';
 import 'features/movies/presentation/pages/top_rated_movies_page.dart';
 import 'features/movies/presentation/pages/watchlist_movies_page.dart';
-import 'features/movies/presentation/provider/movie_detail_notifier.dart';
-import 'features/movies/presentation/provider/movie_list_notifier.dart';
-import 'features/movies/presentation/provider/movie_search_notifier.dart';
-import 'features/movies/presentation/provider/popular_movies_notifier.dart';
-import 'features/movies/presentation/provider/top_rated_movies_notifier.dart';
-import 'features/movies/presentation/provider/watchlist_movie_notifier.dart';
+import 'features/movies/presentation/bloc/movie_detail/movie_detail_bloc.dart';
+import 'features/movies/presentation/bloc/movie_list/movie_list_bloc.dart';
+import 'features/movies/presentation/bloc/movie_search/movie_search_bloc.dart';
+import 'features/movies/presentation/bloc/popular_movies/popular_movies_bloc.dart';
+import 'features/movies/presentation/bloc/top_rated_movies/top_rated_movies_bloc.dart';
+import 'features/movies/presentation/bloc/watchlist_movie/watchlist_movie_bloc.dart';
 import 'features/tv_series/presentation/pages/popular_tvseries_page.dart';
 import 'features/tv_series/presentation/pages/search_tvseries_page.dart';
 import 'features/tv_series/presentation/pages/top_rated_tvseries_page.dart';
 import 'features/tv_series/presentation/pages/tvseries_detail_page.dart';
 import 'features/tv_series/presentation/pages/watchlist_tvseries_page.dart';
-import 'features/tv_series/presentation/provider/popular_tvseries_notifier.dart';
-import 'features/tv_series/presentation/provider/top_rated_tvseries_notifier.dart';
-import 'features/tv_series/presentation/provider/tvseries_detail_notifier.dart';
-import 'features/tv_series/presentation/provider/tvseries_list_notifiler.dart';
-import 'features/tv_series/presentation/provider/tvseries_search_notifier.dart';
-import 'features/tv_series/presentation/provider/watchlist_tvseries_notifier.dart';
+import 'features/tv_series/presentation/bloc/popular_tvseries/popular_tvseries_bloc.dart';
+import 'features/tv_series/presentation/bloc/top_rated_tvseries/top_rated_tvseries_bloc.dart';
+import 'features/tv_series/presentation/bloc/tvseries_detail/tvseries_detail_bloc.dart';
+import 'features/tv_series/presentation/bloc/tvseries_list/tvseries_list_bloc.dart';
+import 'features/tv_series/presentation/bloc/tvseries_search/tvseries_search_bloc.dart';
+import 'features/tv_series/presentation/bloc/watchlist_tvseries/watchlist_tvseries_bloc.dart';
 import 'firebase_options.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  di.init();
+  await di.init();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => di.locator<MovieListNotifier>(),
+        BlocProvider(
+          create: (_) => di.locator<MovieListBloc>(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<MovieDetailNotifier>(),
+        BlocProvider(
+          create: (_) => di.locator<MovieDetailBloc>(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<MovieSearchNotifier>(),
+        BlocProvider(
+          create: (_) => di.locator<MovieSearchBloc>(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<TopRatedMoviesNotifier>(),
+        BlocProvider(
+          create: (_) => di.locator<TopRatedMoviesBloc>(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<PopularMoviesNotifier>(),
+        BlocProvider(
+          create: (_) => di.locator<PopularMoviesBloc>(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<WatchlistMovieNotifier>(),
+        BlocProvider(
+          create: (_) => di.locator<WatchlistMovieBloc>(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<TvSeriesListNotifier>(),
+        BlocProvider(
+          create: (_) => di.locator<TvSeriesListBloc>(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<TvSeriesDetailNotifier>(),
+        BlocProvider(
+          create: (_) => di.locator<TvSeriesDetailBloc>(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<TvSeriesSearchNotifier>(),
+        BlocProvider(
+          create: (_) => di.locator<TvSeriesSearchBloc>(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<TopRatedTvSeriesNotifier>(),
+        BlocProvider(
+          create: (_) => di.locator<TopRatedTvSeriesBloc>(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<PopularTvSeriesNotifier>(),
+        BlocProvider(
+          create: (_) => di.locator<PopularTvSeriesBloc>(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => di.locator<WatchlistTvSeriesNotifier>(),
+        BlocProvider(
+          create: (_) => di.locator<WatchlistTvSeriesBloc>(),
         ),
       ],
       child: MaterialApp(
@@ -131,13 +132,15 @@ class MyApp extends StatelessWidget {
             case AboutPage.ROUTE_NAME:
               return MaterialPageRoute(builder: (_) => AboutPage());
             default:
-              return MaterialPageRoute(builder: (_) {
-                return Scaffold(
-                  body: Center(
-                    child: Text('Page not found :('),
-                  ),
-                );
-              });
+              return MaterialPageRoute(
+                builder: (_) {
+                  return Scaffold(
+                    body: Center(
+                      child: Text('Page not found :('),
+                    ),
+                  );
+                },
+              );
           }
         },
       ),

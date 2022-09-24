@@ -1,9 +1,10 @@
 import 'package:ditonton/common/state_enum.dart';
 import 'package:ditonton/common/utils.dart';
+import 'package:ditonton/features/tv_series/presentation/bloc/watchlist_tvseries/watchlist_tvseries_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/watchlist_tvseries_notifier.dart';
 import '../widgets/tvseries_card_list.dart';
 
 class WatchlistTvSeriesPage extends StatefulWidget {
@@ -19,8 +20,8 @@ class _WatchlistTvSeriesPageState extends State<WatchlistTvSeriesPage>
   void initState() {
     super.initState();
     Future.microtask(() =>
-        Provider.of<WatchlistTvSeriesNotifier>(context, listen: false)
-            .fetchWatchlistTvSeries());
+        BlocProvider.of<WatchlistTvSeriesBloc>(context, listen: false)
+            .add(OnFetchWatchlistTvSeries()));
   }
 
   @override
@@ -30,8 +31,8 @@ class _WatchlistTvSeriesPageState extends State<WatchlistTvSeriesPage>
   }
 
   void didPopNext() {
-    Provider.of<WatchlistTvSeriesNotifier>(context, listen: false)
-        .fetchWatchlistTvSeries();
+    BlocProvider.of<WatchlistTvSeriesBloc>(context, listen: false)
+        .add(OnFetchWatchlistTvSeries());
   }
 
   @override
@@ -42,24 +43,28 @@ class _WatchlistTvSeriesPageState extends State<WatchlistTvSeriesPage>
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<WatchlistTvSeriesNotifier>(
-          builder: (context, data, child) {
-            if (data.watchlistState == RequestState.Loading) {
+        child: BlocBuilder<WatchlistTvSeriesBloc, WatchlistTvSeriesState>(
+          builder: (context, state) {
+            if (state.watchlistState == RequestState.Loading) {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.watchlistState == RequestState.Loaded) {
-              return ListView.builder(
-                itemBuilder: (context, index) {
-                  final movie = data.watchlistTvSeries[index];
-                  return TvSeriesCard(movie);
-                },
-                itemCount: data.watchlistTvSeries.length,
-              );
+            } else if (state.watchlistState == RequestState.Loaded) {
+              if (state.watchlistTvSeries.isEmpty) {
+                return Center(child: Text("Empty Data"));
+              } else {
+                return ListView.builder(
+                  itemBuilder: (context, index) {
+                    final movie = state.watchlistTvSeries[index];
+                    return TvSeriesCard(movie);
+                  },
+                  itemCount: state.watchlistTvSeries.length,
+                );
+              }
             } else {
               return Center(
                 key: Key('error_message'),
-                child: Text(data.message),
+                child: Text(state.message),
               );
             }
           },
